@@ -1,31 +1,19 @@
-console.log("Hello I m ExpressJs")
 const express = require('express')
 const app = express()
-const path =require('path')
 
-console.log(__dirname)
-console.log(path.join(__dirname,'/public'))
-app.use(express.static(path.join(__dirname,'/public')))
-
-app.get('/',(req,res)=>{
-    res.send("<h1 style='color:limegreen'>Hello This Is Home Page.</h1>")
-});
-
-app.get('/about',(req,res)=>{
-    res.send("<h1 style='color:lawngreen'>Hello This Is About Page.</h1>")
+app.get('/Home/product/:name',(req,res)=>{
+    // res.send('Hello I m Home Page.') 
+    res.send(`You searched for ${req.params.name}`)
+    console.log(req.params.name)   
 })
-app.get('/contact',(req,res)=>{
-    res.send([{id:001,
-               street:'prashad farm road, Nakraunda',
-               city:'Dehradun',
-               state:'Uttarakhand',
-               mobile_no:0987654321
-              },
-              { id:002,
-                street:'gularghati road, Balawala',
-                city:'Dehradun',
-                state:'Uttarakhand',
-                mobile_no:0987654675
-               }])
+app.get('/About',(req,res)=>{
+    res.send('Hello I m About Page.')    
 })
-app.listen(8080)
+app.get('/Contact',(req,res)=>{
+    res.send('Hello I m Contact Page.')  
+    console.log(req.query) // it give you query object  
+    console.log(req.path)
+})
+app.listen(8080,()=>{
+    console.log("server start on 8080 port.")
+})
