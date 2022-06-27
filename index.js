@@ -1,6 +1,11 @@
 console.log("Hello I m ExpressJs")
 const express = require('express')
 const app = express()
+const path =require('path')
+
+console.log(__dirname)
+console.log(path.join(__dirname,'/public'))
+app.use(express.static(path.join(__dirname,'/public')))
 
 app.get('/',(req,res)=>{
     res.send("<h1 style='color:limegreen'>Hello This Is Home Page.</h1>")
