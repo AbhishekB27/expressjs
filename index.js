@@ -23,13 +23,14 @@ app.get('/quotes/:quoteId',(req,res)=>{
         res.send(quotes)
     }
     else{
-        res.send('Quote not found enter valid id')
+        res.status(500).send('Quote not found enter valid id')
         console.log('Quote not found enter valid id')
     }
    } catch (error) {
     res.send(error.message)
    }
 })
+//add the quote in data.json
 app.post('/quotes',(req,res)=>{
     try {
         const data = req.body
@@ -52,6 +53,34 @@ app.delete('/quotes/:id',(req,res)=>{
     const quotes = quotess.filter(data=>data.id !=id);
     fs.writeFileSync(path.join(__dirname,'data.json'),JSON.stringify([...quotes]))
     res.send(quotes)
+})
+//update the data of quotes
+app.put('/quotes/:quoteId',(req,res)=>{
+    try {
+        const { quoteId } = req.params
+    const quoteData = req.body
+    // console.log(quoteData)
+    const quotes = JSON.parse( fs.readFileSync(path.join(__dirname,'data.json'),{encoding:'utf-8'}) );
+    // console.log(quotes)
+    const newQuotes = quotes.map((todo)=>{
+        // console.log(todo)
+        if(todo.id == quoteId){
+            return{
+                ...todo,
+                ...quoteData,
+            }
+        }
+        else{
+            return todo
+        }
+    });
+    console.log(newQuotes)
+    fs.writeFileSync(path.join(__dirname,'data.json'),JSON.stringify([...newQuotes]))
+    res.send(newQuotes)
+    console.log('Hello I m put request')
+    } catch (error) {
+        res.send(error.message)
+    }
 })
 app.listen(8080,()=>{
     console.log("server start on 8080 port.")
