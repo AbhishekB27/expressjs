@@ -4,33 +4,33 @@ const app = express()
 app.use(express.json()) // it is inbuilt middleware
 const fs = require('fs')
 const path = require('path')
-const {greet,isAuthorised} = require('./middleware/index')
+const {greet,isAuthorised,isValid} = require('./middleware/index')
 const shortid = require('shortid')
 
 //fetch quotes data
-let accounts = JSON.parse(fs.readFileSync(path.join(__dirname,'MOCK_DATA.json'),{encoding:'utf-8'}))
+let quotes = JSON.parse(fs.readFileSync(path.join(__dirname,'data.json'),{encoding:'utf-8'}))
 // console.log(accounts)
-//fetch all acounts
-  app.get('/accounts',isAuthorised,(request,response)=>{
-    response.json(accounts)
+
+//fetch all quotes
+  app.get('/quotes',(request,response)=>{
+    response.json(quotes)
   });
-  //add api-key
-  app.post('/accounts',(request,response)=>{
-    try {
-      const users = JSON.parse(fs.readFileSync(path.join(__dirname,'user.json'),{encoding:'utf-8'}))
-      console.log(users)
-      const {email} = request.body;
-      const user = {
-      email,
-      api_key:shortid.generate()
+  //add quote
+  app.post('/quote',(request,response)=>{
+    const quote = request.body
+    const newQuote ={
+      id: quotes[quotes.length-1].id + 1,
+      ...quote
     }
-    users.push(user)
-    fs.writeFileSync(path.join(__dirname,'user.json'),JSON.stringify([...users]))
-    response.send(users)
-    } catch (error) {
-      response.send(error.message)
-    }
+    fs.writeFileSync(path.join(__dirname,'data.json'),JSON.stringify([...quotes,newQuote]))
+    response.send(newQuote)
+    // console.log(newQuote)
+  });
+  //add data in quoteData.json
+  app.post('/quotes',isValid,(req,res)=>{
+    console.log("Good😊")
   })
+  
 app.listen(8080,()=>{
     console.log("server start on 8080 port.")
 })

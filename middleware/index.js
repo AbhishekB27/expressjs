@@ -20,8 +20,26 @@ let users = JSON.parse(fs.readFileSync(path.join(path.resolve(),'user.json'),{en
     else res.send("unauthorized")
 }
 // check author is valid or not
-
+const isValid = (req,res,next)=>{
+    const incomingRequest = req.body
+    // console.log(incomingRequest)
+    const author_name = `${incomingRequest.first_name} ${incomingRequest.last_name}`
+    // console.log(author_name)
+    const quotes = JSON.parse(fs.readFileSync(path.join(path.resolve(),'data.json'),{encoding:'utf-8'}))
+    const quote = quotes.filter(data => data.author == author_name)
+    // console.log(quote)
+    if(quote.length != 0){
+        res.send(quote)
+        console.log(`${author_name} has ${quote.length} quotes.`)
+        next()
+    }else{
+        res.status(500).send("Author Does Not Exist.")
+        console.log("Bad😟")
+    }
+    
+}
 module.exports = {
     greet,
-    isAuthorised
+    isAuthorised,
+    isValid
 }
